@@ -1,5 +1,7 @@
+DB_DIR = (TEST_ARGS ? TEST_ARGS['db_dir'] : nil) || '.'
+
 assert('create database') do
-  db = SQLite3::Database.new('mruby-sqlite-test.db')
+  db = SQLite3::Database.new("#{DB_DIR}/mruby-sqlite-test.db")
   begin
     db.execute_batch(
       'drop table foo;' + \
@@ -17,7 +19,7 @@ assert('create database') do
 end
 
 assert('execute batch') do
-  db = SQLite3::Database.new('mruby-sqlite-test.db')
+  db = SQLite3::Database.new("#{DB_DIR}/mruby-sqlite-test.db")
   db.execute_batch('delete from foo')
   db.execute_batch('insert into foo(text) values(?)', 'foo')
   db.execute_batch('insert into foo(text) values(?)', 'bar')
@@ -26,7 +28,7 @@ assert('execute batch') do
 end
 
 assert('transaction short') do
-  db = SQLite3::Database.new('mruby-sqlite-test.db')
+  db = SQLite3::Database.new("#{DB_DIR}/mruby-sqlite-test.db")
   db.transaction
   db.execute_batch('insert into foo(text) values(?)', 'baz')
   db.rollback
@@ -38,7 +40,7 @@ assert('transaction short') do
 end
 
 assert('transaction long') do
-  db = SQLite3::Database.new('mruby-sqlite-test.db')
+  db = SQLite3::Database.new("#{DB_DIR}/mruby-sqlite-test.db")
   db.transaction
   (1..100).each_with_index {|x,i|
     db.execute_batch('insert into bar(id, text) values(?, ?)', x, x)
